@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Northern Illinois ZIP Code Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([42.0, -88.3], 9); // Centered in Northern Illinois
+
+    // Add base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    // ZIP codes to highlight
+    const zipCodesToShow = [
+      "60010","60011","60012","60013","60014","60021","60033","60034","60038",
+      "60039","60042","60050","60051","60055","60067","60072","60074","60078",
+      "60094","60095","60097","60098","60102","60107","60110","60118","60120",
+      "60121","60122","60123","60136","60142","60156","60157","60159","60168",
+      "60169","60170","60172","60173","60179","60180","60192","60193","60194",
+      "60195","60196","60296","60297"
+    ];
+
+    // Load ZIP code boundaries GeoJSON
+    fetch("https://raw.githubusercontent.com/OpenDataDE/State-zip-code-GeoJSON/master/il_illinois_zip_codes_geo.min.json")
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          filter: function(feature) {
+            return zipCodesToShow.includes(feature.properties.ZCTA5CE10);
+          },
+          style: {
+            color: "#0033cc",
+            weight: 2,
+            fillColor: "#66aaff",
+            fillOpacity: 0.4
+          },
+          onEachFeature: function (feature, layer) {
+            const zip = feature.properties.ZCTA5CE10;
+            const town = feature.properties.PO_NAME;
+            layer.bindPopup(`<strong>ZIP Code:</strong> ${zip}<br><strong>Town:</strong> ${town}`);
+          }
+        }).addTo(map);
+      });
+  </script>
+
+</body>
+</html>
