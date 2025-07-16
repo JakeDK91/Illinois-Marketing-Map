@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Northern Illinois ZIP Code Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <style>
     html, body {
       margin: 0;
@@ -23,6 +24,7 @@
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script>
     // Initialize map
     const map = L.map('map').setView([42.0, -88.3], 9); // Centered in Northern Illinois
@@ -31,6 +33,10 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18
     }).addTo(map);
+    // Add search bar (address geocoder)
+L.Control.geocoder({
+  defaultMarkGeocode: true
+}).addTo(map);
 
     // ZIP codes to highlight
     const zipCodesToShow = [
